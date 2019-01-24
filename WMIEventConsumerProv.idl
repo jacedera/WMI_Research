@@ -1,0 +1,31 @@
+// WMIEventConsumerProv.idl : IDL source for WMIEventConsumerProv.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (WMIEventConsumerProv.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "wbemprov.idl";
+	
+[
+	uuid(6866CEA5-EDF2-4B79-B9ED-735A7267A14B),
+	version(1.0),
+	helpstring("WMIEventConsumerProv 1.0 Type Library")
+]
+library WMIEVENTCONSUMERPROVLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	
+	[
+		uuid(96BEA408-AFDD-41A6-B67B-8E9F5DB7BFD9),
+		helpstring("EventConsumer Class")
+	]
+	coclass EventConsumer
+	{
+		[default] interface IWbemProviderInit;
+		interface IWbemEventConsumerProvider;
+	};
+};

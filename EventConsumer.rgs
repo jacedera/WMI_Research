@@ -1,0 +1,23 @@
+HKCR
+{
+	WMIEventConsumerProv.EventConsumer.1 = s 'EventConsumer Class'
+	{
+		CLSID = s '{96BEA408-AFDD-41A6-B67B-8E9F5DB7BFD9}'
+	}
+	WMIEventConsumerProv.EventConsumer = s 'EventConsumer Class'
+	{
+		CLSID = s '{96BEA408-AFDD-41A6-B67B-8E9F5DB7BFD9}'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {96BEA408-AFDD-41A6-B67B-8E9F5DB7BFD9} = s 'EventConsumer Class'
+		{
+			ProgID = s 'WMIEventConsumerProv.EventConsumer.1'
+			VersionIndependentProgID = s 'WMIEventConsumerProv.EventConsumer'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'both'
+			}
+		}
+	}
+}

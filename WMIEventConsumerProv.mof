@@ -1,0 +1,60 @@
+
+#pragma namespace("\\\\.\\root\\WMIBook")
+
+// creates Win32Provider instance
+instance of __Win32Provider as $P
+{
+	Name    = "WMIEventConsumerProv" ;
+	ClsId   = "{96BEA408-AFDD-41A6-B67B-8E9F5DB7BFD9}" ;
+	// ClsId refers to the GUID of a DLL
+	// does this refer to the DLL where we create the 
+	// methods of the event consumer provicderclass?
+
+	ClientLoadableCLSID = NULL;
+	DefaultMachineName = NULL;
+	ImpersonationLevel = 0;
+	InitializationReentrancy = 0;
+	InitializeAsAdminFirst = FALSE;
+	PerLocaleInitialization = FALSE;
+	PerUserInitialization = FALSE;
+	Pure = TRUE;
+	UnloadTimeout = NULL;
+};    
+
+// permanently registers the consumer provider with WMI and provides a reference name
+instance of __EventConsumerProviderRegistration
+{
+    Provider = $P;
+    ConsumerClassNames = { "Sample_WMIBookEventConsumer" };
+};
+
+// example custom event consumer
+class Sample_WMIBookEventConsumer : __EventConsumer
+{
+	[key] string Name;
+	boolean EnableBeep;
+};
+
+// instance of above class
+instance of Sample_WMIBookEventConsumer
+{
+	Name = "MyEventConsumer";
+	EnableBeep = true;
+};
+
+// instance of an event filter with which to subscribe to
+instance of __EventFilter
+{
+
+    Name  = "MyEventConsumerFilter";
+    Query = "SELECT * FROM __InstanceCreationEvent WHERE TargetInstance ISA \"Sample_Basket\"";
+
+	QueryLanguage = "WQL";
+};
+
+// binding of Sample_WMIBookEventConsumer to MyEventConsumerFilter
+instance of __FilterToConsumerBinding
+{
+    Consumer   = "\\\\GWCOLE\\ROOT\\WMIBook:Sample_WMIBookEventConsumer.Name=\"MyEventConsumer\"";
+    Filter = "\\\\GWCOLE\\ROOT\\WMIBook:__EventFilter.Name=\"MyEventConsumerFilter\"";
+};
