@@ -1,0 +1,74 @@
+WMI Notes
+
+GOAL
+-Create WMI Event Consumer Provider that an operator can use to register an event
+-Operator will register an event and provide a Lua script to run
+-Provider will then pass Lua script to CNOLIB Lua interpreter for execution
+
+Questions
+-Does the Lua script need to exist on the remote machine or can it remain on the local host?
+
+Differences Between Temporary and Permanent Event Subscriptions
+-Temporary
+--Can be tested with PowerShell
+--May be run remotely (CONFIRM THIS!)
+--Removed as soon as PowerShell is closed
+-Permanent
+--Do not use PowerShell
+--Stored in WMI repository
+--Can be done by creating a MOF file and compiling with mofcomp.exe
+--Are there other ways to make a permanent event subscription? 
+
+What is involved in this?
+-Filter
+--Also called the "Event"
+--WQL query used to narrow down what is being looked for by the Event class
+-Consumer
+--Instructs subscription on what to do when the event is detected
+-Binding
+--Links a filter to a consumer
+--"If X event occurs, do Y"
+
+Couple of things for us to do:
+1) Create a Managed Object Format (MOF) file and register it with WMI. 
+---To register it, use mofcomp.exe (MOF Compiler)
+---Can we do this in C++ vice MOF?
+---If we absolutely NEED MOF then create C++ to autogenerate MOF file then register it with mofcomp.exe through C++. 
+---Otherwise we can use a Python script or PS script to generate it? That way it's not hardcoded. 
+---The need to dynamically generate a MOF file is to specify the reference name of the provider and the 
+---**UPDATE**: Using COM API for WMI we SHOULD be able to create and register a WMI provider in C++. 
+---I might need a "sink" if I decide to go C++ the whole way. 
+
+
+2) Implement IWbemProviderInit and IWbemEventConsumerProvider in the provider. 
+
+// class definition
+class LuaExecution{
+   String FilePath; // path to Lua script to run
+   String Args; // string representing the arguments to the Lua script to run
+}
+
+
+
+===================================
+=== MISC NOTES ====================
+===================================
+
+Common Information Model (CIM) 
+The CIM defines a model that represents the manageable elements of the enterprise. It is a core concept of the WBEM initiative and was defined by the DMTF. CIM also defines Managed Object Format (MOF) files, a file format to represent classes and instances of that data. 
+
+Common Information Model (CIM) Repository 
+The CIM repository is the store that holds enterprise management information. It uses the CIM as a template for structuring the data held in the repository, and it is implementation specific. 
+
+Managed Object Format (MOF) 
+The MOF is used to define the structure and contents of the CIM schema in human- and machine-readable form. A MOF text file describes the class or instances of one or many managed objects. The information held in the MOF can then be imported into the CIM repository. Plain text MOF files can be read using a normal text view, such as Windows Notepad. We shall examine some examples of MOF files and their structure in later chapters. 
+
+Desktop Management Interface (DMI) 
+The DMI acts as a layer of abstraction between administrators or managers and vendors. It separates those who need to manipulate information from a multitude of products and from the vendors of these products who wish to provide their own unique functionality. The DMI is developed, maintained, and revised by the DMTF. Whereas the SNMP provided a framework for managing components across a network, the DMI provides a framework based upon managing the components on the desktop. The DMI is 
+• Independent of a specific computer or operating system 
+• Independent of a specific management protocol 
+• Easy for vendors to adopt 
+• Useable locally—no network required 
+• Useable remotely using DCE/RPC, ONC/RPC, or TI/RPC 
+• Mappable to existing management protocols (for example, CMIP or SNMP) 
+
