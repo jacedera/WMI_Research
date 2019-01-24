@@ -1,4 +1,5 @@
 WMI Notes
+words
 
 GOAL
 -Create WMI Event Consumer Provider that an operator can use to register an event
